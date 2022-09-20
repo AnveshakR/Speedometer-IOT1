@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">Speedometer</string>
+    <string name="textCurrentSpeed">Current Speed:</string>
+    <string name="textOdometer">Total Distance:</string>
+    <string name="textAvgSpeed">Average Speed:</string>
+    <string name="dispCurrentSpeed">0 m/s</string>
+    <string name="dispOdometer">0 m</string>
+    <string name="dispAvgSpeed">0 m/s</string>
+    <string name="buttonStart">Start</string>
+</resources>
