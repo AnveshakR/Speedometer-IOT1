@@ -1,5 +1,7 @@
 package com.example.speedometer;
 
+import static com.example.speedometer.BuildConfig.MAPS_API_KEY;
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
@@ -17,25 +19,48 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class MainActivity extends AppCompatActivity {
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.model.Marker;
+import com.google.android.libraries.places.api.Places;
+import com.google.android.libraries.places.api.model.PlaceLikelihood;
+import com.google.android.libraries.places.api.net.PlacesClient;
+import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
+
+import java.util.Properties;
+
+public class MainActivity extends AppCompatActivity implements OnMapReadyCallback{
 
 
     Location myLocation; // making Location object
-    int timeDelay = 10000; // time delay between readings
+    int timeDelay = 1000; // time delay between readings
+
+    GoogleMap gmap;
 
     LocationManager locationManager; // making LocationManager object
     TextView textCurrentSpeed, textOdometer, textAvgSpeed;
     Context context;
 
+    @SuppressLint("MissingPermission")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         context = this;
 
+        Places.initialize(getApplicationContext(), MAPS_API_KEY);
+        PlacesClient placesClient = Places.createClient(this);
+
         textCurrentSpeed = findViewById(R.id.dispCurrentSpeed); // attaching current speed textview to variable
         textOdometer = findViewById(R.id.dispOdometer); // attaching odometer textview to variable
         textAvgSpeed = findViewById(R.id.dispAvgSpeed); //attaching avg speed textview to variable
+
+        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
+                .findFragmentById(R.id.mapView);
+        mapFragment.getMapAsync(this);
 
         locationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
 
@@ -93,6 +118,7 @@ public class MainActivity extends AppCompatActivity {
 
         double templat = 404, templong = 404; // initializing the temp variables for lat and long to a dummy value
         double odometer = 0, totalTime = 0, currentDist, currentSpeed, avgSpeed;
+        String address;
 
         @SuppressLint("SetTextI18n")
         @Override
@@ -106,6 +132,11 @@ public class MainActivity extends AppCompatActivity {
             } else {
                 // if there is a location in the temp variables, then they are the old locations before the location update
                 // so we get another set of coordinates and calculate distance between them
+
+                gmap.clear();
+                final LatLng loc = new LatLng(location.getLatitude(), location.getLongitude());
+                Marker mark = gmap.addMarker(new MarkerOptions().position(loc).title("You"));
+                gmap.moveCamera(CameraUpdateFactory.newLatLngZoom(loc, 15));
 
                 currentDist = earthDistance(location.getLatitude(), location.getLongitude(), templong, templat);
                 currentDist = (double)(Math.round(currentDist*1000d)/1000d); //distance between two points
@@ -148,5 +179,13 @@ public class MainActivity extends AppCompatActivity {
 
         }
     };
+
+    @Override
+    public void onMapReady(GoogleMap googleMap) {
+        gmap = googleMap;
+//        final LatLng loc = new LatLng(0,0);
+//        Marker mark = gmap.addMarker(new MarkerOptions().position(loc).title("You"));
+//        gmap.moveCamera(CameraUpdateFactory.newLatLngZoom(loc, 15));
+    }
 }
 
