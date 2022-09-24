@@ -147,7 +147,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                 odometer = (double)(Math.round(odometer*1000d)/1000d);
                 totalTime += (timeDelay/1000d); // incrementing the total time
                 currentSpeed = currentDist / (timeDelay/1000d);
-                currentSpeed = (double)(Math.round(currentSpeed*1000d)/1000d);
+                currentSpeed = (Math.round(currentSpeed*1000d)/1000d);
                 avgSpeed = odometer / totalTime; // average speed is total distance/total time
                 avgSpeed = (double)(Math.round(avgSpeed*1000d)/1000d);
 
@@ -157,7 +157,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 //                System.out.println("currspeed: "+currentSpeed);
 //                System.out.println("avgspeed: "+avgSpeed);
 
-                textCurrentSpeed.setText(currentSpeed + " m/s");
+                textCurrentSpeed.setText(String.valueOf(currentSpeed));
                 textOdometer.setText(odometer + "m");
                 textAvgSpeed.setText(avgSpeed + "m/s"); // setting the textviews to their values
 
